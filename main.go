@@ -67,6 +67,7 @@ func main() {
 			return err
 		}
 
+		ctx.Export("staticEndpoint", account.PrimaryEndpoints.Web())
 		return nil
 	})
 }
