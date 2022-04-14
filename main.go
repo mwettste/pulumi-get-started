@@ -15,7 +15,7 @@ func main() {
 		}
 
 		// Create an Azure resource (Storage Account)
-		account, err := storage.NewStorageAccount(ctx, "sa", &storage.StorageAccountArgs{
+		account, err := storage.NewStorageAccount(ctx, "storageacc", &storage.StorageAccountArgs{
 			ResourceGroupName: resourceGroup.Name,
 			Sku: &storage.SkuArgs{
 				Name: pulumi.String("Standard_LRS"),
@@ -42,6 +42,30 @@ func main() {
 				return accountKeys.Keys[0].Value, nil
 			},
 		))
+
+		// static website support
+		staticWebsite, err := storage.NewStorageAccountStaticWebsite(ctx, "staticWebsite", &storage.StorageAccountStaticWebsiteArgs{
+			AccountName:       account.Name,
+			ResourceGroupName: resourceGroup.Name,
+			IndexDocument:     pulumi.String("index.html"),
+		})
+
+		if err != nil {
+			return err
+		}
+
+		// upload the file
+		_, err = storage.NewBlob(ctx, "index.html", &storage.BlobArgs{
+			ResourceGroupName: resourceGroup.Name,
+			AccountName:       account.Name,
+			ContainerName:     staticWebsite.ContainerName,
+			Source:            pulumi.NewFileAsset("index.html"),
+			ContentType:       pulumi.String("text/html"),
+		})
+
+		if err != nil {
+			return err
+		}
 
 		return nil
 	})
