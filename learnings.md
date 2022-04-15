@@ -5,3 +5,4 @@
 * Pulumi.yaml file defines the project (descriptions etc.)
 * Pulumi.env.yaml contains the configurations per stack
 * main.go contains is the program that defines the stacks resources
+* pulumi/azure-native signifies that pulumi provides native azure integration => they have nightly builds with the latest Azure Features, so everything is available right away
